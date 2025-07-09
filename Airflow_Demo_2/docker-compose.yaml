@@ -1,0 +1,64 @@
+version: '3'
+
+x-airflow-common:
+  &airflow-common
+  build:
+    context: .                # Use current directory
+    dockerfile: Dockerfile    # Custom Dockerfile
+  environment:
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: mysql+mysqldb://${USER}:${PASSWORD}@${HOST}:${PORT}/${DB}
+    AIRFLOW__CORE__FERNET_KEY: 'Mjk4K4UG1M_fKNRxeEMnoRKZ5csGgJYKUreRw1aeio8='  # generate one if blank
+    AIRFLOW__WEBSERVER__SECRET_KEY: 'lPVKVeEiRU5uBJm81ZY5XGTqB2pPpHzHDyDW8sgZv-iehH1Aucu_rVBIwSk47DdZm6mdFpG9uV1u2c6iQ06-ww'
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__CORE__LOGGING_LEVEL: INFO
+    _PIP_ADDITIONAL_REQUIREMENTS: >
+      mysqlclient
+      scrapy
+      mysql-connector-python
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./logs:/opt/airflow/logs
+    - ./plugins:/opt/airflow/plugins
+    - ./scraper:/opt/airflow/scraper
+    - ./scrapy.cfg:/opt/airflow/scrapy.cfg
+  user: "${AIRFLOW_UID:-50000}:0"
+
+services:
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      - airflow-init
+    volumes:
+      - ./.env:/opt/airflow/.env
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+      - ./scraper:/opt/airflow/scraper
+      - ./scrapy.cfg:/opt/airflow/scrapy.cfg
+   
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    restart: always
+    depends_on:
+      - airflow-init
+    volumes:
+      - ./.env:/opt/airflow/.env
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+      - ./scraper:/opt/airflow/scraper
+      - ./scrapy.cfg:/opt/airflow/scrapy.cfg
+ 
+  airflow-init:
+    <<: *airflow-common
+    command: bash -c "airflow db init && airflow users create \
+      --username airflow --password airflow --firstname Airflow --lastname Admin \
+      --role Admin --email admin@example.com"
+ 

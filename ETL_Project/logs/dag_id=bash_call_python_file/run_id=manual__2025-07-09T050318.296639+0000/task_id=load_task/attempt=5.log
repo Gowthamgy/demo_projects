@@ -1,0 +1,56 @@
+[2025-07-09T05:15:17.344+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2025-07-09T05:15:17.427+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: bash_call_python_file.load_task manual__2025-07-09T05:03:18.296639+00:00 [queued]>
+[2025-07-09T05:15:17.458+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: bash_call_python_file.load_task manual__2025-07-09T05:03:18.296639+00:00 [queued]>
+[2025-07-09T05:15:17.458+0000] {taskinstance.py:2306} INFO - Starting attempt 5 of 5
+[2025-07-09T05:15:17.482+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): load_task> on 2025-07-09 05:03:18.296639+00:00
+[2025-07-09T05:15:17.492+0000] {standard_task_runner.py:90} INFO - Running: ['airflow', 'tasks', 'run', 'bash_call_python_file', 'load_task', 'manual__2025-07-09T05:03:18.296639+00:00', '--job-id', '40', '--raw', '--subdir', 'DAGS_FOLDER/test_dag.py', '--cfg-path', '/tmp/tmp6cg0l62y']
+[2025-07-09T05:15:17.496+0000] {standard_task_runner.py:91} INFO - Job 40: Subtask load_task
+[2025-07-09T05:15:17.498+0000] {logging_mixin.py:188} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:61 DeprecationWarning: This process (pid=335) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-07-09T05:15:17.500+0000] {standard_task_runner.py:63} INFO - Started process 336 to run task
+[2025-07-09T05:15:17.641+0000] {task_command.py:426} INFO - Running <TaskInstance: bash_call_python_file.load_task manual__2025-07-09T05:03:18.296639+00:00 [running]> on host fe3fd911cec1
+[2025-07-09T05:15:17.852+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='bash_call_python_file' AIRFLOW_CTX_TASK_ID='load_task' AIRFLOW_CTX_EXECUTION_DATE='2025-07-09T05:03:18.296639+00:00' AIRFLOW_CTX_TRY_NUMBER='5' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-07-09T05:03:18.296639+00:00'
+[2025-07-09T05:15:17.854+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2025-07-09T05:15:18.275+0000] {logging_mixin.py:188} INFO - ❌ Error inserting data into MySQL: 1364 (HY000): Field 'id' doesn't have a default value
+[2025-07-09T05:15:18.278+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2025-07-09T05:15:18.280+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/mysql/connector/connection_cext.py", line 697, in cmd_query
+    self._cmysql.query(
+_mysql_connector.MySQLInterfaceError: Field 'id' doesn't have a default value
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/baseoperator.py", line 401, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/operators/python.py", line 235, in execute
+    return_value = self.execute_callable()
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/operators/python.py", line 252, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/test_dag.py", line 27, in load_task
+    load_data(data)
+  File "/opt/airflow/ETL/load/load_to_mysql.py", line 18, in load_data
+    cursor.execute("""
+  File "/home/airflow/.local/lib/python3.12/site-packages/mysql/connector/cursor_cext.py", line 372, in execute
+    result = self._cnx.cmd_query(
+             ^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/mysql/connector/opentelemetry/context_propagation.py", line 111, in wrapper
+    result = method(cnx, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/mysql/connector/connection_cext.py", line 705, in cmd_query
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 1364 (HY000): Field 'id' doesn't have a default value
+[2025-07-09T05:15:18.374+0000] {taskinstance.py:1206} INFO - Marking task as FAILED. dag_id=bash_call_python_file, task_id=load_task, run_id=manual__2025-07-09T05:03:18.296639+00:00, execution_date=20250709T050318, start_date=20250709T051517, end_date=20250709T051518
+[2025-07-09T05:15:18.445+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 40 for task load_task (1364 (HY000): Field 'id' doesn't have a default value; 336)
+[2025-07-09T05:15:18.478+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 1
+[2025-07-09T05:15:18.522+0000] {taskinstance.py:3503} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-07-09T05:15:18.526+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

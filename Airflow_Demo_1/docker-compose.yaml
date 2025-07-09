@@ -1,0 +1,81 @@
+services:
+  airflow-webserver:
+    image: apache/airflow:2.8.1
+    container_name: airflow-webserver
+    depends_on:
+      - airflow-scheduler
+    environment:
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: mysql+mysqldb://${USER}:${PASSWORD}@${HOST}:${PORT}/${DB}
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__WEBSERVER__SECRET_KEY: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      AIRFLOW__DATABASE__SQL_ALCHEMY_POOL_ENABLED: "True"
+      AIRFLOW__DATABASE__SQL_ALCHEMY_POOL_SIZE: 5
+      AIRFLOW__DATABASE__SQL_ALCHEMY_MAX_OVERFLOW: 10
+      _AIRFLOW_WWW_USER_USERNAME: admin
+      _AIRFLOW_WWW_USER_PASSWORD: admin
+      _PIP_ADDITIONAL_REQUIREMENTS: >
+        mysqlclient
+        scrapy
+        mysql-connector-python
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+      - ./works:/opt/airflow/works
+      - ./tested:/opt/airflow/tested
+      - ./connection:/opt/airflow/connection
+      - ./scrapy.cfg:/opt/airflow/scrapy.cfg
+      - ./.env:/opt/airflow/.env
+    command: webserver
+
+  airflow-scheduler:
+    image: apache/airflow:2.8.1
+    container_name: airflow-scheduler
+    environment:
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: mysql+mysqldb://${USER}:${PASSWORD}@${HOST}:${PORT}/${DB}
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      _PIP_ADDITIONAL_REQUIREMENTS: >
+        mysqlclient
+        scrapy
+        mysql-connector-python
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+      - ./works:/opt/airflow/works
+      - ./tested:/opt/airflow/tested
+      - ./connection:/opt/airflow/connection
+      - ./scrapy.cfg:/opt/airflow/scrapy.cfg
+      - ./.env:/opt/airflow/.env
+    command: scheduler
+
+  airflow-init:
+    image: apache/airflow:2.8.1
+    container_name: airflow-init
+    environment:
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: mysql+mysqldb://${USER}:${PASSWORD}@${HOST}:${PORT}/${DB}
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      _PIP_ADDITIONAL_REQUIREMENTS: >
+        mysqlclient
+        scrapy
+        mysql-connector-python
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+      - ./works:/opt/airflow/works
+      - ./tested:/opt/airflow/tested
+      - ./connection:/opt/airflow/connection
+      - ./scrapy.cfg:/opt/airflow/scrapy.cfg
+      - ./.env:/opt/airflow/.env
+    entrypoint: >
+      bash -c "
+        airflow db upgrade &&
+        airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com
+      "
+    restart: "on-failure"
+
+volumes:
+  mysql_data:

@@ -1,0 +1,30 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Airflow logs, dags, and plugins (if generated)
+logs/
+*.log
+
+# Airflow SQLite DB (if used)
+airflow.db
+airflow.db-journal
+
+# Airflow configuration files (if generated)
+airflow.cfg
+unittests.cfg
+webserver_config.py
+
+# Environment files
+.env
+
+# Docker volumes
+mysql_data/
+
+# VSCode settings
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db

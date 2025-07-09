@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environments
+venv/
+env/
+
+# Airflow
+logs/
+airflow.db
+airflow.cfg
+unittests.cfg
+
+# Docker
+*.log
+*.pid
+
+# System
+.DS_Store
+
+# Credentials
+.env
+
+# Word files (if unwanted)
+*.docx
+
+# Ignore Logs
+logs/
+
+# Ignore env files
+.env
