@@ -21,6 +21,8 @@ This project implements an **ETL (Extract, Transform, Load)** pipeline using **A
 │ │ └── extract_api.py # Extract data from an external API
 │ └── load/
 │ └── load_to_mysql.py # Load data into MySQL
+|  └── transform/
+| └── clean_data.py # 
 │
 ├── logs/ # Airflow logs (ignored by Git)
 └── plugins/ # Optional Airflow plugins
