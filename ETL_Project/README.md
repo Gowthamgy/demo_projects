@@ -6,6 +6,7 @@ This project implements an **ETL (Extract, Transform, Load)** pipeline using **A
 
 ## 📁 Project Structure
 
+```
 ├── docker-compose.yaml # Docker Compose file for Airflow & MySQL
 ├── Dockerfile # Optional custom Docker build for Airflow
 ├── .gitignore # Git ignore rules
@@ -23,7 +24,7 @@ This project implements an **ETL (Extract, Transform, Load)** pipeline using **A
 │
 ├── logs/ # Airflow logs (ignored by Git)
 └── plugins/ # Optional Airflow plugins
-
+```
 
 ---
 
