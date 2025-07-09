@@ -5,6 +5,7 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime
 from ETL.load.load_to_mysql import load_data
 from ETL.extract.extract_api import extract_data
+from ETL.transform.clean_data import clean_data
 
 default_args = {
     'start_date': datetime(2024, 1, 1),
@@ -38,4 +39,10 @@ with DAG(
         provide_context=True,
     )
 
-    extarct >> load
+    clean = PythonOperator(
+        task_id='clean_task',
+        python_callable=clean_data,
+        provide_context=True,
+    )
+
+    extarct >> load >> clean
